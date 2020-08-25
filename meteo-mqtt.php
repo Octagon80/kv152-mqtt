@@ -121,41 +121,7 @@ function handler(){
             mqtt_write($MQTT_METEO_YANDEX_WATCHDOG, time());
             //Получим погоду из Народного мониторинга
             $uuid = md5($NARODMON_MYSITE);
-            /*
-
-              $narodMonPassword = 'RVe0hdEn';
-              $narodMonLogin    = 'octagon80';
-
-              //1. авторизация
-              $hash_pwd =  md5($uuid . md5($narodMonPassword));
-              $request = array(
-              'cmd'     => 'userLogon',
-              'login'   => $narodMonLogin,
-              'hash'    => $hash_pwd,
-              'uuid'    => $uuid,
-              'api_key' => '36z1c/wfLMvhU',
-              'lang'    => 'ru'
-              );
-              if ($ch = curl_init('http://narodmon.ru/api')) {
-              curl_setopt($ch, CURLOPT_POST, true);
-              curl_setopt($ch, CURLOPT_USERAGENT, $mySite);
-              curl_setopt($ch, CURLOPT_TIMEOUT, 5);
-              curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-              curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($request));
-              $reply = curl_exec($ch);
-              curl_close($ch);
-              }
-              if( $ch === false ){
-              echo "ОШИБКА подключения к Narodmon\r\n";
-              }
-              if ($debug > 3) {
-              echo "Ответ от Narodmon:";
-              //echo implode(" ", $reply);
-              echo "-------------------------\r\n";
-              echo print_r($reply, true);
-              echo "\r\n";
-              }
-             */
+            
             //2 запрос данных
             $request = array('cmd' => 'sensorsOnDevice',
                 'id' => $NARODMON_ID, //идентификатор датчика
@@ -197,18 +163,7 @@ function handler(){
                 if ($debug > 0)
                     echo "От Народмон получены ошибочные данные " . $reply . " \n";
 
-                /*
-                  if ($debug > 0)
-                  echo "Ждем\n";
-                  if (!sleep_my($PAUSE))
-                  break;
-                  if (!mqtt_loop())
-                  break; //$client->loop();
 
-
-                  continue;
-                 * Получили ошибочные данные, тогда берем результаты от яндекс
-                 */
             } else {
 
                 if ($debug > 3) {
