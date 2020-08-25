@@ -36,13 +36,7 @@ $SIG_handler = function () {
     die('Останов');
 };
 
-/*
-  register_shutdown_function($SIG_handler);
-  pcntl_signal(SIGTERM, $SIG_handler);
-  pcntl_signal(SIGHUP,  $SIG_handler);
-  pcntl_signal(SIGINT,  $SIG_handler);
-  set_error_handler($SIG_handler , E_ALL);
- */
+
 
 /**
  * Обработчик сообщений от брокера
