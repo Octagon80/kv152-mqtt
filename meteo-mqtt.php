@@ -13,9 +13,9 @@ $MQTT_INFOPANEL_WATCHDOG = 'sysinfo/watchdog/infopanel';
 
 
 
-$NARODMON_ID = 15757;
-$NARODMIN_APIKEY = '36z1c/wfLMvhU'; //'tKSU7cskrTCkh';//
-$NARODMON_MYSITE = 'kladovka.ftp.ru'; //'mysite.ru';//
+global $NARODMON_ID;
+global $NARODMIN_APIKEY;
+global $NARODMON_MYSITE;
 
 $SIMILATE = false;
 
