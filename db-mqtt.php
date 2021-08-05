@@ -8,6 +8,11 @@ $NEED_LOG = false;
 define('CLIENT_ID', "db");
 include_once("/var/www/inc/first.inc.php");
 include __DIR__."/inc/mqtt_serv.inc.php";
+include __DIR__."/inc/mqtt_topics.php";
+
+global $MQTT_METEO_TOPICS_WEATHER;
+global $MQTT_METEO_TOPICS_YANDEX;
+
 $debug = 1;
 $PAUSE = 60; //пауза между запросами
 
@@ -83,7 +88,8 @@ function db_write($title, $sql) {
 function mqttProcessMesssage($message) {
     global $client;
     global $panelData;
-
+    global $MQTT_METEO_TOPICS_WEATHER;
+    global $MQTT_METEO_TOPICS_YANDEX;
 
     /*
       Параметр point
@@ -98,6 +104,9 @@ function mqttProcessMesssage($message) {
       9 Кладовка
 
      */
+    
+  
+     
 //Время замера
     $DTM = DateTimes2Str(new DateTime());
 
@@ -109,7 +118,7 @@ function mqttProcessMesssage($message) {
     $numb_pos = 9;
     //if( $message->topic == 'weather/winddir/dtm')   $panelData['winddir']['dtm']   = str2dtm($message->payload);
     //if( $message->topic == 'weather/winddir/value') $panelData['winddir']['value'] = str2int( $message->payload );
-    if ($message->topic == 'weather/winddir/value') {
+    if ($message->topic == $MQTT_METEO_TOPICS_WEATHER['WINDDIR_VAL'] ) {
         $sql = "SELECT add_params('$DTM." . sprintf('%03d', $numb_pos) . "', 4,17,  " . $message->payload . ", 11);";
         db_write('Улица. Направление ветра.', $sql);
     }
@@ -118,7 +127,7 @@ function mqttProcessMesssage($message) {
     $numb_pos = 8;
     //if( $message->topic == 'weather/wind/value') $panelData['wind']['value'] = str2int( $message->payload );
     //if( $message->topic == 'weather/wind/dtm')   $panelData['wind']['dtm']   = str2dtm($message->payload);
-    if ($message->topic == 'weather/wind/value') {
+    if ($message->topic == $MQTT_METEO_TOPICS_WEATHER['WIND_VAL'] ) {
         $sql = "SELECT add_params('$DTM." . sprintf('%03d', $numb_pos) . "', 4,16,  " . $message->payload . ", 10);";
         db_write('Улица. ветер.', $sql);
     }
@@ -126,7 +135,7 @@ function mqttProcessMesssage($message) {
     $numb_pos = 7;
     //if( $message->topic == 'weather/press/value') $panelData['press']['value'] = str2int( $message->payload );
     //if( $message->topic == 'weather/press/dtm')   $panelData['press']['dtm']   = str2dtm($message->payload);
-    if ($message->topic == 'weather/press/value') {
+    if ($message->topic == $MQTT_METEO_TOPICS_WEATHER['PRESS_VAL'] ) {
         $sql = "SELECT add_params('$DTM." . sprintf('%03d', $numb_pos) . "', 4,9,  " . $message->payload . ", 6);";
         db_write('Улица. Давление.', $sql);
     }
@@ -135,7 +144,7 @@ function mqttProcessMesssage($message) {
     $numb_pos = 6;
     //if( $message->topic == 'weather/hum/value') $panelData['hum']['value'] = str2int( $message->payload );
     //if( $message->topic == 'weather/hum/dtm')   $panelData['hum']['dtm']   = str2dtm($message->payload);
-    if ($message->topic == 'weather/hum/value') {
+    if ($message->topic == $MQTT_METEO_TOPICS_WEATHER['HUM_VAL'] ) {
         $sql = "SELECT add_params('$DTM." . sprintf('%03d', $numb_pos) . "', 4,7,  " . $message->payload . ", 3);";
         db_write('Улица. Влажность.', $sql);
     }
@@ -144,7 +153,7 @@ function mqttProcessMesssage($message) {
     $numb_pos = 5;
     //if( $message->topic == 'weather/temp/value') $panelData['temp']['value'] = str2int( $message->payload );
     //if( $message->topic == 'weather/temp/dtm')   $panelData['temp']['dtm']   = str2dtm($message->payload);
-    if ($message->topic == 'weather/temp/value') {
+    if ($message->topic == $MQTT_METEO_TOPICS_WEATHER['TEMP_VAL'] ) {
         $sql = "SELECT add_params('$DTM." . sprintf('%03d', $numb_pos) . "', 4,6, " . $message->payload . ", 2);";
         db_write('Улица. Температура.', $sql);
     }
@@ -153,7 +162,7 @@ function mqttProcessMesssage($message) {
     $numb_pos = 100;
     //if( $message->topic == 'weather/kpindex/value') $panelData['kpindex']['value'] = str2int( $message->payload );
     //if( $message->topic == 'weather/kpindex/dtm')   $panelData['kpindex']['dtm']   = str2dtm($message->payload);
-    if ($message->topic == 'weather/kpindex/value') {
+    if ($message->topic == $MQTT_METEO_TOPICS_WEATHER['KPINDEX_VAL'] ) {
         $sql = "SELECT add_params('$DTM." . sprintf('%03d', $numb_pos) . "', 4,20, " . $message->payload . ", 2);";
         db_write('Улица. kp-index.', $sql);
     }

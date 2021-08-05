@@ -27,6 +27,12 @@ $mqttSubscribeAddress= "#";
     $logmqtt->lfile("/tmp/".CLIENT_ID.".log");
     if( $logmqtt !== false ) $logmqtt->lwrite(CLIENT_ID.". Начало работы.");
 
+/**
+ * 
+ * @global boolean $client
+ * @global boolean $clientIsConnected
+ * @global Logging $logmqtt
+ */   
 function mqtt_reconnect() {
     global $client;
     global $clientIsConnected;
@@ -40,6 +46,18 @@ function mqtt_reconnect() {
 }
 
 
+
+
+
+/**
+ * 
+ * @global boolean $client
+ * @global string $mqttSubscribeAddress
+ * @global Logging $logmqtt
+ * @param type $code
+ * @param type $message
+ * @return type
+ */
 function mqtt_connectCB( $code, $message) {
     global $client;
     global $mqttSubscribeAddress;
@@ -58,7 +76,10 @@ function mqtt_connectCB( $code, $message) {
     
     return( true );
 }
-    
+
+
+
+
 /**
  * Запись параметра в MQTT сервер
  * @param type $topic
@@ -108,6 +129,12 @@ if( $USE_SSL ){
 
 
 
+
+/**
+ * 
+ * @global boolean $client
+ * @global Logging $logmqtt
+ */
 function mqtt_publish() {
     global $client;
     global $logmqtt;
@@ -115,6 +142,13 @@ function mqtt_publish() {
 }
 
 
+
+/**
+ * 
+ * @global boolean $client
+ * @global Logging $logmqtt
+ * @return type
+ */
 function mqtt_loop() {
     global $client;
     global $logmqtt;
@@ -170,7 +204,7 @@ function mqtt_write($topic, $value) {
     global $debug;
     global $logmqtt;
     if ($debug > 0)
-        echo "$topic, $value\n";
+        echo "function mqtt_write('".$topic."', '".$value."')\n";
     if (!mqtt_loop())   return(false);
     try {
         $client->publish($topic, $value, 0, false);
@@ -193,6 +227,14 @@ function mqtt_write($topic, $value) {
     return( true );
 }
 
+
+/**
+ * 
+ * @global boolean $client
+ * @global boolean $clientIsConnected
+ * @global Logging $logmqtt
+ * @return type
+ */
 function mqtt_close() {
     global $client;
     global $clientIsConnected;

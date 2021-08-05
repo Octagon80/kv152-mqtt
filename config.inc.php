@@ -1,0 +1,1 @@
+/etc/phppgadmin/config.inc.php

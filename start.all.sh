@@ -9,7 +9,7 @@ pkill -f $1
  #return $pid
 }
 
-cd /home/clue/server
+cd /home/clue/server/prg
 
 #getPidPir
 #pid_pir=$?
@@ -45,3 +45,18 @@ screen -dmS web-mqtt /usr/bin/php ./web-mqtt.php
 
 
 
+echo "Обновление информации для панели на кухне"
+killProcByName infopanel-kitchen.php
+screen -dmS infopanel-kitchen /usr/bin/php ./infopanel-kitchen.php
+
+echo "Получение показаний датчиков метеостанции"
+killProcByName meteo-my-mqtt.php
+screen -dmS pogoda-my /usr/bin/php ./meteo-my-mqtt.php
+
+
+
+echo "Баланс на счету IS74"
+killProcByName is74balance-mqtt.php
+screen -dmS is74 /usr/bin/php ./is74balance-mqtt.php
+
+screen -ls

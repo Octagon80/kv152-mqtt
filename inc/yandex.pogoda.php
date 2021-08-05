@@ -33,7 +33,7 @@ function WetherYandex($debug){
  
    $pogodaXML = new SimpleXMLElement( $html );
 
-   if( $debug >3) echo  __FUNCTION__."<PRE>".print_r($pogodaXML->weather->day, true)."</PRE>"; 
+   //if( $debug >3) echo  __FUNCTION__."<PRE>".print_r($pogodaXML->weather->day, true)."</PRE>"; 
 
  
 
@@ -67,7 +67,7 @@ function WetherYandex($debug){
 );
 
 
-  if( $debug > 2) echo  __FUNCTION__."<PRE>".print_r($res,true)."</PRE>";
+  //if( $debug > 2) echo  __FUNCTION__."<PRE>".print_r($res,true)."</PRE>";
   return( $res );
 }
 
