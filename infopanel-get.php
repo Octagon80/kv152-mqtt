@@ -22,6 +22,10 @@ global $DEBUG_CFG;
 $DEBUG = $DEBUG = $DEBUG_CFG["LEVEL"]["DEBUG"];// $DEBUG = $DEBUG_CFG["LEVEL"]["MSG"]
 $DEBUG = false;        
 
+
+//==true, если требуется принудительно переконнектится к mqtt
+$needRestart = false;
+
 $MQTT_INFOPANEL_WATCHDOG = 'sysinfo/watchdog/infopanel';
 
 $PANEL_MAX_LEN = 20 - 1;
@@ -58,7 +62,10 @@ function diffTimeIsOk($dtm1, $dtm2) {
     if (!$dtm1 || !$dtm2)
         return( false );
     $diff = abs($dtm1->format('U') - $dtm2->format('U'));
-    if( $diff > 20 * 60 ) echo __FUNCTION__."::Большая разница ".$dtm1->format('c')."  ".$dtm2->format('c')." \r\n ";
+    if( $diff > 20 * 60 ){
+        echo __FUNCTION__."::Большая разница ".$dtm1->format('c')."  ".$dtm2->format('c')." \r\n ";
+        $needRestart = true;
+    }
     return( $diff < 20 * 60);
 }
 /**
@@ -370,9 +377,10 @@ while (true) {
     }
     $firstTime = false;
      if (!mqtt_loop()) continue;
-    
+     
+    $needRestart = false;
     echo "Начали опрос\n";
-    while (true) {
+    while ( !$needRestart) {
         //формируем строку для панели
         updateInfoPanelString();
         if (!mqtt_loop()) break;
