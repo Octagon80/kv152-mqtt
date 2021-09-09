@@ -26,7 +26,7 @@ $DEBUG = false;
 //==true, если требуется принудительно переконнектится к mqtt
 $needRestart = false;
 
-$MQTT_INFOPANEL_WATCHDOG = 'sysinfo/watchdog/infopanel';
+
 
 $PANEL_MAX_LEN = 20 - 1;
 
@@ -59,6 +59,7 @@ $panelData = array(
  * @param time_obj $dtm2
  */
 function diffTimeIsOk($dtm1, $dtm2) {
+    global $needRestart;
     if (!$dtm1 || !$dtm2)
         return( false );
     $diff = abs($dtm1->format('U') - $dtm2->format('U'));
@@ -117,6 +118,7 @@ function updateInfoPanelString() {
     global  $panelSt2Begin;
     global $PANEL_MAX_LEN;
     global $MQTT_IS74;
+    global $MQTT_INFOPANEL;
     
     
     $msgEdds = getEdds74();
@@ -247,7 +249,8 @@ function updateInfoPanelString() {
     if ($line != $lineOld) {
 //       DEBUG_MSG($DEBUG_CFG["LEVEL"]["DEBUG"], __FUNCTION__,  "Результат Строка " . $line . "          " );
         //$client->publish('kv152/infopanel', $line);
-        mqtt_write('kv152/infopanel', $line);
+        mqtt_write($MQTT_INFOPANEL['INFOPANEL_VAL'], $line);
+        
     }
  
     $lineOld = $line;
@@ -267,6 +270,8 @@ function mqttProcessMesssage($message) {
     global $client;
     global $panelData;
     global $MQTT_IS74;
+    global $MQTT_METEO_TOPICS_WEATHER;
+    
     if (strpos($message->topic, 'weather') !== false)
         echo $message->topic, " ", $message->payload, "\n";
     if (strpos($message->topic, 'is74') !== false)
@@ -275,48 +280,48 @@ function mqttProcessMesssage($message) {
     if ($message->topic == 'sys/dtm')
         $panelData['sys']['dtm'] = str2dtm($message->payload);
 
-    if ($message->topic == 'weather/winddir/value')
+    if ($message->topic == $MQTT_METEO_TOPICS_WEATHER['WINDDIR_VAL'] )
         $panelData['winddir']['value'] = str2int($message->payload);
-    if ($message->topic == 'weather/winddir/dtm')
+    if ($message->topic ==  $MQTT_METEO_TOPICS_WEATHER['WINDDIR_DTM'])
         $panelData['winddir']['dtm'] = str2dtm($message->payload);
     
-    if ($message->topic == 'weather/wind/value')
+    if ($message->topic ==  $MQTT_METEO_TOPICS_WEATHER['WIND_VAL'])
         $panelData['wind']['value'] = str2int($message->payload);
-    if ($message->topic == 'weather/wind/source')
+    if ($message->topic ==  $MQTT_METEO_TOPICS_WEATHER['WIND_SRC'])
         $panelData['wind']['source'] = $message->payload;
-    if ($message->topic == 'weather/wind/dtm')
+    if ($message->topic ==  $MQTT_METEO_TOPICS_WEATHER['WIND_DTM'])
         $panelData['wind']['dtm'] = str2dtm($message->payload);
     
-    if ($message->topic == 'weather/press/value')
+    if ($message->topic ==  $MQTT_METEO_TOPICS_WEATHER['PRESS_VAL'])
         $panelData['press']['value'] = str2int($message->payload);
-    if ($message->topic == 'weather/press/source')
+    if ($message->topic ==  $MQTT_METEO_TOPICS_WEATHER['PRESS_SRC'])
         $panelData['press']['source'] = $message->payload;
-    if ($message->topic == 'weather/press/dtm')
+    if ($message->topic ==  $MQTT_METEO_TOPICS_WEATHER['PRESS_DTM'])
         $panelData['press']['dtm'] = str2dtm($message->payload);
     
-    if ($message->topic == 'weather/hum/value')
+    if ($message->topic ==  $MQTT_METEO_TOPICS_WEATHER['HUM_VAL'])
         $panelData['hum']['value'] = str2int($message->payload);
-    if ($message->topic == 'weather/hum/source')
+    if ($message->topic ==  $MQTT_METEO_TOPICS_WEATHER['HUM_SRC'])
         $panelData['hum']['source'] = $message->payload;
-    if ($message->topic == 'weather/hum/dtm')
+    if ($message->topic == $MQTT_METEO_TOPICS_WEATHER['HUM_DTM'])
         $panelData['hum']['dtm'] = str2dtm($message->payload);
     
-    if ($message->topic == 'weather/temp/value'){
+    if ($message->topic ==  $MQTT_METEO_TOPICS_WEATHER['TEMP_VAL']){
 //        echo "КОНТРОЛЬ !-знака в инфопанеле ".__FILE." ".__FUNCTION__." :: ".$message->topic." value=".$message->payload."\r\n";
         $panelData['temp']['value'] = str2int($message->payload);
      }
-    if ($message->topic == 'weather/temp/source')
+    if ($message->topic ==  $MQTT_METEO_TOPICS_WEATHER['TEMP_SRC'])
         $panelData['temp']['source'] = $message->payload;
-    if ($message->topic == 'weather/temp/dtm'){
+    if ($message->topic ==  $MQTT_METEO_TOPICS_WEATHER['TEMP_DTM']){
         $panelData['temp']['dtm'] = str2dtm($message->payload);
 //        echo "КОНТРОЛЬ !-знака в инфопанеле ".__FILE." ".__FUNCTION__." :: ".$message->topic." value=".$message->payload."\r\n";
     }
     
-    if ($message->topic == 'weather/kpindex/value')
+    if ($message->topic ==  $MQTT_METEO_TOPICS_WEATHER['KPINDEX_VAL'])
         $panelData['kpindex']['value'] = str2int($message->payload);
-    if ($message->topic == 'weather/kpindex/source')
+    if ($message->topic ==  $MQTT_METEO_TOPICS_WEATHER['KPINDEX_SRC'])
         $panelData['kpindex']['source'] = $message->payload;
-    if ($message->topic == 'weather/kpindex/dtm')
+    if ($message->topic ==  $MQTT_METEO_TOPICS_WEATHER['KPINDEX_DTM'])
         $panelData['kpindex']['dtm'] = str2dtm($message->payload);
 
    if ($message->topic == $MQTT_IS74['BALANCE_VAL'] )
@@ -373,7 +378,7 @@ while (true) {
     if( $firstTime ){
     echo "Указываем, что требуется принудительное обновления значений всем программам\n";
     //mqtt_write('kv152/pogoda-force-update', '1');
-      mqtt_write($MQTT_INFOPANEL_WATCHDOG, time());
+      mqtt_write($MQTT_INFOPANEL['WATCHDOG'], time());
     }
     $firstTime = false;
      if (!mqtt_loop()) continue;
@@ -385,7 +390,7 @@ while (true) {
         updateInfoPanelString();
         if (!mqtt_loop()) break;
         echo "                   ".($infopanelVisual?"O":"*")."Инфопанель\r";
-        mqtt_write($MQTT_INFOPANEL_WATCHDOG, time());
+        mqtt_write($MQTT_INFOPANEL['WATCHDOG'], time());
         $infopanelVisual = 1-$infopanelVisual;
        
         if (!sleep_my($PAUSE)) break;
