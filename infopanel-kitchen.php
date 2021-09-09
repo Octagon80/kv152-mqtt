@@ -10,7 +10,7 @@
 define('CLIENT_ID', "infopanel-kitchen");
 include __DIR__."/inc/mqtt_serv.inc.php";
 $PAUSE = 5; //пауза между запросами
-$MQTT_INFOPANEL_WATCHDOG = 'sysinfo/watchdog/infopanel-kitchen';
+
 
 
 //Что отображаем: 1 - время, 2 - температуру
@@ -94,6 +94,7 @@ function updateInfoPanelString() {
     global $lineOld;
     global $client;
     global $mode;
+    global $MQTT_INFOPANEL_KITCHEN;
 
     //Системное время
     $sysDtm = new DateTime();
@@ -152,7 +153,7 @@ function updateInfoPanelString() {
     
     if ($line != $lineOld) {
         echo "Строка '" . $line . "'          \n";
-        mqtt_write('kv152/kitchen/value', $line);
+        mqtt_write( $MQTT_INFOPANEL_KITCHEN['INFOPANEL_VAL'] , $line);
     }
             
     $mode = $mode + 1;
@@ -222,7 +223,7 @@ while (true) {
     if( $firstTime ){
      //echo "Указываем, что требуется принудительное обновления значений всем программам\n";
      //mqtt_write('kv152/pogoda-force-update', '1');
-      mqtt_write($MQTT_INFOPANEL_WATCHDOG, time());
+      mqtt_write($MQTT_INFOPANEL_KITCHEN['WATCHDOG'], time());
     }
     $firstTime = false;
      if (!mqtt_loop()) continue;
@@ -233,7 +234,7 @@ while (true) {
         updateInfoPanelString();
         if (!mqtt_loop()) break;
         echo "                   ".($infopanelVisual?"O":"*")."Инфопанель\r";
-        mqtt_write($MQTT_INFOPANEL_WATCHDOG, time());
+        mqtt_write($MQTT_INFOPANEL_KITCHEN['WATCHDOG'], time());
         $infopanelVisual = 1-$infopanelVisual;
        
         if (!sleep_my($PAUSE)) break;
