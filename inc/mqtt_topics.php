@@ -93,3 +93,17 @@ $MQTT_IS74 = array(
     'BALANCE_DTM' => 'kv152/is74/balance_dtm',
     'FORCE_UPDATE' => FORCE_UPDATE
 );    
+
+
+$MQTT_INFOPANEL = array( 
+    'WATCHDOG' => 'sysinfo/watchdog/infopanel',
+    'INFOPANEL_VAL' => 'kv152/infopanel'
+   /* ,'INFOPANEL_DTM' => 'kv152/infopanel_dtm',
+    'FORCE_UPDATE' => FORCE_UPDATE*/
+); 
+
+
+$MQTT_INFOPANEL_KITCHEN = array( 
+    'WATCHDOG' => 'sysinfo/watchdog/infopanel-kitchen',
+    'INFOPANEL_VAL' => 'kv152/kitchen/value'
+); 
