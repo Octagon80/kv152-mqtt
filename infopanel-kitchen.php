@@ -9,6 +9,7 @@
 
 define('CLIENT_ID', "infopanel-kitchen");
 include __DIR__."/inc/mqtt_serv.inc.php";
+include __DIR__."/inc/mqtt_topics.php";
 $PAUSE = 5; //пауза между запросами
 
 
