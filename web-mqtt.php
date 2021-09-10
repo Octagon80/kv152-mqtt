@@ -14,6 +14,7 @@ $webFileName = '/var/www/mqtt/web-mqtt.json';
 define('CLIENT_ID', "web-mqtt");
 //include_once(__DIR__ . "/inc/php_serial.class.php");
 include __DIR__."/inc/mqtt_serv.inc.php";
+include __DIR__."/inc/mqtt_topics.php";
 $PAUSE = 60; //пауза между запросами
 
 //Данные для web
