@@ -10,6 +10,7 @@ define('CLIENT_ID', "is74");
 include __DIR__ . "/inc/mqtt_serv.inc.php";
 include __DIR__ . "/inc/mqtt_topics.php";
 include __DIR__ . "/inc/get_url_page.php";
+include __DIR__."/inc/mqtt_topics.php";
 $PAUSE = 900; //пауза между запросами
 
 $MQTT_TOPIC = "kv152/is74/#";
